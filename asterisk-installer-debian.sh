@@ -1,6 +1,6 @@
 #!/bin/bash
 # Full automated installation of Asterisk on Debian
-# copyright © 2011 Simon DESVERGEZ simon@desvergez.net
+# copyright © 2011 Simon DESVERGEZ dev@adminisk.org
 clear
 
 # Variables
@@ -11,7 +11,6 @@ DEFPW=att123
 
 # Directories
 mkdir -p /usr/src/asterisk
-mkdir -p /var/www/default
 mkdir -p $ROOTDIR
 cd $ROOTDIR
 
@@ -23,6 +22,7 @@ apt-get install -y build-essential libxml2-dev libncurses5-dev linux-headers-$(u
 # VMware tools
 lspci | grep -i vmware > /dev/null
 if [ $? -eq 0 ]; then
+	[ vmware-toolbox-cmd -v ] && exit
 	apt-get -y install open-vm-tools
 fi
 
@@ -72,8 +72,6 @@ make config
 # Asterisk Settings
 cd $ROOTDIR
 chmod +r /var/log/asterisk -R
-sed -i s/password=att123/password=$DEFPW/g /etc/asterisk/cdr_mysql.conf
-sed -i s/dbpass = att123/dbpass = $DEFPW/g /etc/asterisk/res_config_mysql.conf
 wget -r http://adminisk.org/install/adminisk-sounds-fr.tar.gz -O adminisk-sounds-fr.tar.gz
 mv /var/lib/asterisk/sounds/fr /var/lib/asterisk/sounds/fr-ori
 tar -zxvf adminisk-sounds-fr.tar.gz -C /var/lib/asterisk/sounds/
