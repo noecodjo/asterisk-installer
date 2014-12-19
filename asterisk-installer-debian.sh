@@ -22,8 +22,7 @@ apt-get install -y build-essential libxml2-dev libncurses5-dev linux-headers-$(u
 # VMware tools
 lspci | grep -i vmware > /dev/null
 if [ $? -eq 0 ]; then
-	[ vmware-toolbox-cmd -v ] && exit
-	apt-get -y install open-vm-tools
+	vmware-toolbox-cmd -v >/dev/null 2>&1 || { apt-get -y install open-vm-tools >&2; }
 fi
 
 # debconf pre-seeds
